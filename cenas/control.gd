@@ -123,11 +123,13 @@ func cursor_select_cell():
 var move_arr = []
 var can_move_cells = []
 
+
 func move_cell():
 	for i in move_arr.size():
-		if calculate_vector_distance(PlayerCell,move_arr[i]) < 2.1:
-			$marks.set_cell(move_arr[i].x,move_arr[i].y,3)
-			can_move_cells.append(move_arr[i])
+		if move_arr[i].x > (PlayerCell.x -player_mp) and move_arr[i].x < (PlayerCell.x  +player_mp) and move_arr[i].y > (PlayerCell.y  -player_mp) and move_arr[i].y < (PlayerCell.y  +player_mp):
+		#if calculate_vector_distance(PlayerCell,move_arr[i]) < 2.83:
+				$marks.set_cell(move_arr[i].x,move_arr[i].y,3)
+				can_move_cells.append(move_arr[i])
 		else:
 			$marks.set_cell(move_arr[i].x,move_arr[i].y,0)
 	pass
