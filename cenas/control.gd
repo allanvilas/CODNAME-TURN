@@ -17,7 +17,9 @@ var init_seted = false
 var PlayerCell = Vector2(0,0)
 var insert_time = 0.05
 onready var cell_base_ref
+
 func _ready():
+	
 	base_cells = base.get_used_cells()
 	initial_base_size = base_cells.size()
 	cell_base_ref = $base.get_used_cells()
@@ -26,7 +28,6 @@ func _ready():
 	$Button.set_disabled(true)
 	$sort.set_disabled(true)
 	rand_to_use()
-	teste_distance()
 	pass 
 
 func rand_to_use():
@@ -41,34 +42,38 @@ func rand_to_use():
 	return rand_to_use()
 	pass
 onready var dot = load("res://assets/0_1/dot.png")
+
+var teste_cont 
 var weight_test = []
 func teste_distance():
-	var quant = cell_base_ref.size() -1
-	cell_base_ref.erase(PlayerCell)
-	for i in quant:
-		var x = cell_base_ref[i]
-		var y = Vector2(x.x,x.y)
-		var z = $base.map_to_world(cell_base_ref[i])
-		var w = Vector2(z.x+8,z.y+8)
-		var k = Vector2(z.x,z.y)
-		var names = Sprite.new()
-		var lab = Label.new()
-		weight_test.append(round(calculate_vector_distance(w,$base.map_to_world(PlayerCell))))
-		lab.set_text(str(weight_test[i]))
-		names.set_texture(dot)
-		add_child(names)
-		add_child(lab)
-		#names.rect_scale()
-		print("TEST: "+str(weight_test[i]))
-		names.set_position(w)
-		lab.set_position(k)
-		quant -=1
-		print(weight_test)
-	pass
-	
+	if init_seted == true and teste_cont >0:
+		var quant = cell_base_ref.size()
+		for i in quant:
+			var x = cell_base_ref[i]
+			var y = Vector2(x.x,x.y)
+			var z = $base.map_to_world(cell_base_ref[i])
+			var w = Vector2(z.x+8,z.y+8)
+			var k = Vector2(z.x+2,z.y+2)
+			var names = Sprite.new()
+			var lab = Label.new()
+			weight_test.append(round(calculate_vector_distance(w,(Vector2(PlayerCell.x+8,PlayerCell.y+8)))))
+			lab.set_text(str(weight_test[i]))
+			names.set_texture(dot)
+			add_child(names)
+			add_child(lab)
+			#names.rect_scale()
+			print("TEST: "+str(weight_test[i]))
+			names.set_position(w)
+			lab.set_position(k)
+			quant -=1
+			print(weight_test)
+			teste_cont -= 1
+			pass
+		pass
 	pass
 
 var cell_world_pos = []
+
 func cursor_select_cell():
 	var b_cells = $base.get_used_cells()
 	if cell_world_pos.size() < b_cells.size():
@@ -261,7 +266,12 @@ func enemy_cell():
 	if doEnemuCell and quant > 0:
 		cell_distance.append(calculate_vector_distance(PlayerCell,cell[0]))
 		move_arr.append(cell[0])
+		var label = Label.new()
 		var ds = cell_distance[cell_distance.size()-1]
+		label.set_text(str(round(ds*10)))
+		add_child(label)
+		var pos = $base.map_to_world(cell[0])
+		label.set_position(Vector2(pos.x+4,pos.y+4))
 		var x = cell[0].x
 		var y = cell[0].y
 		if ds > 0 and ds < 1.111:
