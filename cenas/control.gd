@@ -26,6 +26,7 @@ func _ready():
 	$Button.set_disabled(true)
 	$sort.set_disabled(true)
 	rand_to_use()
+	teste_distance()
 	pass 
 
 func rand_to_use():
@@ -39,7 +40,33 @@ func rand_to_use():
 	new_ti.queue_free()
 	return rand_to_use()
 	pass
-
+onready var dot = load("res://assets/0_1/dot.png")
+var weight_test = []
+func teste_distance():
+	var quant = cell_base_ref.size() -1
+	cell_base_ref.erase(PlayerCell)
+	for i in quant:
+		var x = cell_base_ref[i]
+		var y = Vector2(x.x,x.y)
+		var z = $base.map_to_world(cell_base_ref[i])
+		var w = Vector2(z.x+8,z.y+8)
+		var k = Vector2(z.x,z.y)
+		var names = Sprite.new()
+		var lab = Label.new()
+		weight_test.append(round(calculate_vector_distance(w,$base.map_to_world(PlayerCell))))
+		lab.set_text(str(weight_test[i]))
+		names.set_texture(dot)
+		add_child(names)
+		add_child(lab)
+		#names.rect_scale()
+		print("TEST: "+str(weight_test[i]))
+		names.set_position(w)
+		lab.set_position(k)
+		quant -=1
+		print(weight_test)
+	pass
+	
+	pass
 
 var cell_world_pos = []
 func cursor_select_cell():
