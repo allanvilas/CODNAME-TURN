@@ -15,11 +15,10 @@ var sort = false
 var initial_base_size
 var init_seted = false
 var PlayerCell = Vector2(0,0)
-var insert_time = 0.05
+var insert_time = 0.03
 onready var cell_base_ref
 
 func _ready():
-	
 	base_cells = base.get_used_cells()
 	initial_base_size = base_cells.size()
 	cell_base_ref = $base.get_used_cells()
@@ -27,14 +26,14 @@ func _ready():
 	set_mark()
 	$Button.set_disabled(true)
 	$sort.set_disabled(true)
-	rand_to_use()
+	#rand_to_use()
 	pass 
 
 func rand_to_use():
 	var new_ti = Timer.new()
 	new_ti.set_name("_rand")
 	new_ti.set_wait_time(1)
-	new_ti.start()
+	new_ti.set_autostart(true)
 	add_child(new_ti)
 	yield(new_ti,"timeout")
 	rand_to_use = rand_range(0,10)
@@ -93,10 +92,11 @@ func cursor_select_cell():
 	cursor_pos = Vector2(round(cursor_pos.x),round(cursor_pos.y))
 	#print(cursor_pos)
 	var world_t_pos = $base.world_to_map(cursor_pos)
+	$"debug info/mouse".set_text("CursorCell: "+str(world_t_pos))
 	#print(world_t_pos)
 	#$marks.set_cell(world_t_pos.x,world_t_pos.y,9)
 	if Input.is_action_just_pressed("left_click") and world_t_pos == PlayerCell:
-		print("Player CELL!!!")
+		print("Player CELL!!! : "+str(PlayerCell))
 		match move_state:
 			true:
 				move_state = false
@@ -159,14 +159,11 @@ var blankMoveCells = []
 func move_cell():
 	for i in move_arr.size():
 		#if calculate_vector_distance(PlayerCell,move_arr[i]) < 2.83:
-		
 		$marks.set_cell(move_arr[i].x,move_arr[i].y,3)
 		can_move_cells.append(move_arr[i])
-		
 	pass
 	for i in blankMoveCells.size():
 		$marks.set_cell(blankMoveCells[i].x,blankMoveCells[i].y,0)
-		
 		pass
 var move_clicked = false
 var select_cells = []
@@ -211,7 +208,8 @@ func set_mark():
 		var y = base.y
 		var new_timer = Timer.new()
 		new_timer.set_wait_time(insert_time)
-		new_timer.start()
+		new_timer.set_autostart(true)
+		#new_timer.set_name("Mark")
 		add_child(new_timer)
 		bol.shuffle()
 		self.base.set_cell(x,y,round(rand_range(0,4)),bol[0],bol[1])
@@ -252,7 +250,7 @@ func enemy_cell():
 	#loop´inicio
 	var new_timer = Timer.new()
 	new_timer.set_wait_time(insert_time)
-	new_timer.start()
+	new_timer.set_autostart(true)
 	add_child(new_timer)
 	yield(new_timer,"timeout")
 	#yeld do loop
@@ -271,9 +269,8 @@ func enemy_cell():
 		var ds = cell_distance[cell_distance.size()-1]
 		label.set_text(str(floor(ds*10)))
 		var temp_ds = floor(ds*10)
-		if temp_ds <= (player_mp *10) and cell[0].x >= (PlayerCell.x -2) and cell[0].x <= (PlayerCell.x +2) and cell[0].y >= (PlayerCell.y -2) and cell[0].y <= (PlayerCell.y +2):
+		if temp_ds <= (player_mp *10):
 			move_arr.append(cell[0])
-			
 			pass
 		else:
 			blankMoveCells.append(cell[0])
