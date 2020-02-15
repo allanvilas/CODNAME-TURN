@@ -154,18 +154,20 @@ func cursor_select_cell():
 
 var move_arr = []
 var can_move_cells = []
-
+var blankMoveCells = []
 
 func move_cell():
 	for i in move_arr.size():
-		if move_arr[i].x > (PlayerCell.x -player_mp) and move_arr[i].x < (PlayerCell.x  +player_mp) and move_arr[i].y > (PlayerCell.y  -player_mp) and move_arr[i].y < (PlayerCell.y  +player_mp):
 		#if calculate_vector_distance(PlayerCell,move_arr[i]) < 2.83:
-				$marks.set_cell(move_arr[i].x,move_arr[i].y,3)
-				can_move_cells.append(move_arr[i])
-		else:
-			$marks.set_cell(move_arr[i].x,move_arr[i].y,0)
+		
+		$marks.set_cell(move_arr[i].x,move_arr[i].y,3)
+		can_move_cells.append(move_arr[i])
+		
 	pass
-	
+	for i in blankMoveCells.size():
+		$marks.set_cell(blankMoveCells[i].x,blankMoveCells[i].y,0)
+		
+		pass
 var move_clicked = false
 var select_cells = []
 func set_mark_by_weight(weight,cell):
@@ -265,10 +267,17 @@ func enemy_cell():
 		pass
 	if doEnemuCell and quant > 0:
 		cell_distance.append(calculate_vector_distance(PlayerCell,cell[0]))
-		move_arr.append(cell[0])
 		var label = Label.new()
 		var ds = cell_distance[cell_distance.size()-1]
-		label.set_text(str(round(ds*10)))
+		label.set_text(str(floor(ds*10)))
+		var temp_ds = floor(ds*10)
+		if temp_ds <= (player_mp *10) and cell[0].x >= (PlayerCell.x -2) and cell[0].x <= (PlayerCell.x +2) and cell[0].y >= (PlayerCell.y -2) and cell[0].y <= (PlayerCell.y +2):
+			move_arr.append(cell[0])
+			
+			pass
+		else:
+			blankMoveCells.append(cell[0])
+			pass
 		add_child(label)
 		var pos = $base.map_to_world(cell[0])
 		label.set_position(Vector2(pos.x+4,pos.y+4))
@@ -329,11 +338,13 @@ func enemy_cell():
 	new_timer.queue_free()
 	pass
 
+#cauculo da distancia euclidiana
 func calculate_vector_distance(A,B):
 	var distance = sqrt(((A.x - B.x)*(A.x - B.x))+((A.y - B.y)*(A.y - B.y)))
 	print(distance)
 	return distance
 	pass
+	
 func toggle_visible_mark():
 	if $marks.is_visible():
 		$marks.set_visible(false)
